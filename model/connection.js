@@ -64,6 +64,22 @@ db.testimonial = testimonial;
 const enquiry = require('./enquiry')(sequelize, DataTypes);
 db.enquiry = enquiry;
 
+//productCategoriesmodel
+const productCategories = require('./productCategories')(sequelize, DataTypes);
+db.productCategories = productCategories;
+
+//productmodel
+const product = require('./product')(sequelize, DataTypes);
+db.product = product;
+
+//orderRequestmodel
+const orderRequest = require('./orderRequest')(sequelize, DataTypes);
+db.orderRequest = orderRequest;
+
+//orderRequestProductmodel
+const orderRequestProduct = require('./orderRequestProduct')(sequelize, DataTypes);
+db.orderRequestProduct = orderRequestProduct;
+
 
 //user-homepagesecondsectionmodel
 User.hasMany(homePageSecondSection, { as: "homePageSecondSection" });
@@ -107,6 +123,37 @@ User.hasMany(testimonial, { as: "testimonial" });
 testimonial.belongsTo(User, {
     foreignKey: "userId",
 });
+
+//user-productCategories
+User.hasMany(productCategories, { as: "productCategories" });
+productCategories.belongsTo(User, {
+    foreignKey: "userId",
+});
+
+//user-product
+User.hasMany(product, { as: "product" });
+product.belongsTo(User, {
+    foreignKey: "userId",
+});
+
+//productCategory-product
+productCategories.hasMany(product, { as: "products" });
+product.belongsTo(productCategories, {
+    foreignKey: "productCategoryId",
+});
+
+//orderRequest-orderRequestProduct
+orderRequest.hasMany(orderRequestProduct, { as: "orderRequestProducts" });
+orderRequestProduct.belongsTo(orderRequest, {
+    foreignKey: "orderRequestId",
+});
+
+//product-orderRequestProduct
+product.hasOne(orderRequestProduct, { as: "product" });
+orderRequestProduct.belongsTo(product, {
+    foreignKey: "productId",
+});
+
 
 
 

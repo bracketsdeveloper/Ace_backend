@@ -7,6 +7,9 @@ const homePageFifthSectionController = require('./controller/homePage/fifthSecti
 const homePageFifthSectionContentController = require('./controller/homePage/fifthSectionContent');
 const testimonialController = require('./controller/testimonial');
 const enquiryController = require('./controller/enquiry');
+const productCategoryController = require('./controller/productCategory');
+const productController = require('./controller/product');
+const orderRequestController = require('./controller/orderRequest');
 
 
 const routes = [
@@ -19,6 +22,9 @@ const routes = [
     { path: '/home-page-fifth-section-content', controller: homePageFifthSectionContentController },
     { path: '/testimonial', controller: testimonialController },
     { path: '/enquiry', controller: enquiryController },
+    { path: '/product-category', controller: productCategoryController },
+    { path: '/product', controller: productController },
+    { path: '/order-request', controller: orderRequestController },
 ];
 
 module.exports = routes;
