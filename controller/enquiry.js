@@ -6,7 +6,7 @@ const verifyAdmin = require('../middleware/admin');
 const create = require('../services/enquiry/create')
 const update = require('../services/enquiry/update')
 const destroy = require('../services/enquiry/delete')
-const {get, getAll} = require('../services/enquiry/get')
+const {get, getAll, getAndFindAll} = require('../services/enquiry/get')
 const { textValidation, nameValidation, phoneValidation, emailValidation, IDValidation } = require('../helper/validation');
 
 
@@ -23,6 +23,8 @@ router.post('/create',
     async function (req, res) {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            let { name, phone, email, subject, message } = req.body;
+            console.log(name);
             return res.status(400).json({
                 errors: errors.mapped(),
             });
@@ -103,7 +105,8 @@ router.get('/view',
 verifyAccessToken,
 verifyAdmin,
 async function (req, res) {
-    let ticket = await getAll({})
+    const { page, size } = req.query;
+    let ticket = await getAndFindAll({}, page, size)
 
     return res.status(ticket.status).json({
         message: ticket.message,
