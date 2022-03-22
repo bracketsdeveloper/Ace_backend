@@ -1,10 +1,17 @@
 const db = require('../../model/connection');
 const product = db.product;
+const productCategories = db.productCategories;
 
 const get = async (where) => {
     try {
         let userData = await product.findOne({
             where,
+            include: [
+                {
+                  model: productCategories,
+                  as: "productCategories",
+                },
+            ],
         })
 
 
@@ -77,6 +84,12 @@ const getAndFindAll = async (where, page, size) => {
             ],
             limit,
             offset,
+            include: [
+                {
+                  model: productCategories,
+                  as: "productCategories",
+                },
+            ],
         })
         let data = getPagingData(userData, page, limit);
         let response = {
@@ -88,6 +101,7 @@ const getAndFindAll = async (where, page, size) => {
         return response;
 
     } catch (error) {
+        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',
@@ -98,4 +112,43 @@ const getAndFindAll = async (where, page, size) => {
     }
 }
 
-module.exports = { get, getAll, getAndFindAll }
+const getAndFindAllCustom = async (where, includeWhere, page, size) => {
+    const { limit, offset } = getPagination(page, size);
+    try {
+        let userData = await product.findAndCountAll({
+            where,
+            order: [
+                ['id', 'DESC'],
+            ],
+            limit,
+            offset,
+            include: [
+                {
+                  model: productCategories,
+                  as: "productCategories",
+                  where:includeWhere
+                },
+            ],
+        })
+        let data = getPagingData(userData, page, limit);
+        let response = {
+            status: 200,
+            message: 'data recieved successfully',
+            data: data,
+            error: false
+        }
+        return response;
+
+    } catch (error) {
+        console.log(error);
+        let response = {
+            status: 400,
+            message: 'Oops! Something went wrong. Please try again',
+            data: null,
+            error: true
+        }
+        return response;
+    }
+}
+
+module.exports = { get, getAll, getAndFindAll, getAndFindAllCustom }

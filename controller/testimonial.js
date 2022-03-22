@@ -6,7 +6,7 @@ const verifyAdmin = require('../middleware/admin');
 const create = require('../services/testimonial/create')
 const update = require('../services/testimonial/update')
 const destroy = require('../services/testimonial/delete')
-const {get, getAll} = require('../services/testimonial/get')
+const {get, getAll, getAndFindAll} = require('../services/testimonial/get')
 const { textValidation, IDValidation } = require('../helper/validation');
 const uuid4 = require('uuid4');
 const fs = require('fs');
@@ -153,7 +153,8 @@ async function (req, res) {
 // home page second section view route.
 router.get('/view',
 async function (req, res) {
-    let ticket = await getAll({})
+    const { page, size } = req.query;
+    let ticket = await getAndFindAll({}, page, size)
 
     return res.status(ticket.status).json({
         message: ticket.message,

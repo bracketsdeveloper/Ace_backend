@@ -140,6 +140,7 @@ product.belongsTo(User, {
 productCategories.hasMany(product, { as: "products" });
 product.belongsTo(productCategories, {
     foreignKey: "productCategoryId",
+    as: "productCategories"
 });
 
 //orderRequest-orderRequestProduct
