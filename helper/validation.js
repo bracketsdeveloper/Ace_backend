@@ -69,14 +69,14 @@ module.exports={
         if (isEmpty(value)) {
             return Promise.reject(`Please enter a valid ${field}`);
         }
-        if (!value.match(/^[a-z 0-9~%.:_\@\-\/\(\)\\\#\;\[\]\{\}\$\!\&+=,]+$/i)) {
+        if (!value.match(/^[a-z 0-9~%.:_\@\-\/\(\)\\\#\;\[\]\{\}\$\!\&\<\>\'+=,]+$/i)) {
             return Promise.reject(`Please enter a valid ${field}`);
         }
     },
 
     emptyTextValidation: (value, field)=>{
         if (!isEmpty(value)) {
-        if (!value.match(/^[a-z 0-9~%.:_\@\-\/\(\)\\\#\;\[\]\{\}\$\!\&\<\>+=,]+$/i)) {
+        if (!value.match(/^[a-z 0-9~%.:_\@\-\/\(\)\\\#\;\[\]\{\}\$\!\&\<\>\'+=,]+$/i)) {
             return Promise.reject(`Please enter a valid ${field}`);
         }
     }

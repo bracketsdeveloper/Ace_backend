@@ -140,6 +140,39 @@ router.get('/view-profile',
 
     })
 
+    // change password route.
+    router.post('/change-password',
+    verifyAccessToken,
+    //custom validation for password
+    body('oldPassword').custom(async (value) => passwordValidation(value)),
+    body('oldPassword').custom(async (value, { req }) => {
+        let user = await getWithPassword({
+            id: req.payload.id,
+            verified: 1,
+        })
+        if (!bcrypt.compareSync(value, user.data.password)) {
+            return Promise.reject('Invalid Old Password');
+        }
+    }),
+    body('password').custom(async (value) => passwordValidation(value)),
+        // password must be at least 5 chars long
+    body('cpassword').custom((value, { req }) => cpasswordValidation(value, { req })),
+    async function (req, res) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.mapped(),
+            });
+        } else {
+            let { password } = req.body;
+            let userDet = await update({id: req.payload.id},{ password: bcrypt.hashSync(password, 10) })
+            return res.status(userDet.status).json({
+                message: userDet.message,
+            });
+        }
+    
+    })
+
 
 
 module.exports = router;
