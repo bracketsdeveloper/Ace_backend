@@ -7,7 +7,7 @@ module.exports = {
             }
             const secret = process.env.JWTRSECURITYKEYACCESS;
             const options = {
-                expiresIn: "10s",
+                expiresIn: "10h",
                 // expiresIn: "30s",
                 issuer: "impact-school.com",
                 // audience: userId,

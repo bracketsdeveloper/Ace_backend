@@ -1,6 +1,7 @@
 const db = require('../../model/connection');
 const product = db.product;
 const productCategories = db.productCategories;
+const { Sequeize, Op, QueryTypes } = require('sequelize');
 
 const get = async (where) => {
     try {
@@ -112,13 +113,13 @@ const getAndFindAll = async (where, page, size) => {
     }
 }
 
-const getAndFindAllCustom = async (where, includeWhere, page, size) => {
+const getAndFindAllCustom = async (where, includeWhere, sort, sortType, page, size) => {
     const { limit, offset } = getPagination(page, size);
     try {
         let userData = await product.findAndCountAll({
             where,
             order: [
-                ['id', 'DESC'],
+                [sort, sortType],
             ],
             limit,
             offset,

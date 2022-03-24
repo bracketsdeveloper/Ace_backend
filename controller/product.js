@@ -11,6 +11,7 @@ const { textValidation, IDValidation } = require('../helper/validation');
 const uuid4 = require('uuid4');
 const fs = require('fs');
 const path = require('path');
+const { Sequeize, Op, QueryTypes } = require('sequelize');
 
 
 // home page second section edit route.
@@ -155,8 +156,40 @@ async function (req, res) {
 // home page second section view route.
 router.get('/view-custom',
 async function (req, res) {
-    const { page, size } = req.query;
-    let ticket = await getAndFindAllCustom({}, {}, page, size)
+    const { page, size, search, price, category, sort, sortType } = req.query;
+    
+    let where = {}
+    let includeWhere = {}
+
+    if(search!=undefined && search!=null && search!=""){
+        where = {...where,
+            [Op.or]: [
+                { name: {[Op.like]: `%${search}%`} },
+                { price: {[Op.like]: `%${search}%`} },
+                { description: {[Op.like]: `%${search}%`} },
+            ],
+        }
+    }
+    if(price!=undefined && price!=null && price!=""){
+        const priceList = req.query.price.split(';');
+        where = {...where,
+            [Op.and]: [
+                { price: {[Op.in]: priceList} },
+            ],
+        }
+    }
+
+
+    if(category!=undefined && category!=null && category!=""){
+        const categoryList = req.query.category.split(';');
+        where = {...where,
+            [Op.and]: [
+                { productCategoryId: {[Op.in]: categoryList} },
+            ],
+        }
+    }
+
+    let ticket = await getAndFindAllCustom(where, includeWhere, sort, sortType, page, size)
 
     return res.status(ticket.status).json({
         message: ticket.message,

@@ -1,5 +1,7 @@
 const db = require('../../model/connection');
 const productCategories = db.productCategories;
+const product = db.product;
+const { Sequelize, Op, QueryTypes } = require('sequelize');
 
 const get = async (where) =>{
     try {
@@ -41,6 +43,41 @@ const getAll = async (where) =>{
         return response;
         
     } catch (error) {
+        let response = {
+            status: 400,
+            message: 'Oops! Something went wrong. Please try again',
+            data: null,
+            error: true
+        }
+        return response;
+    }
+}
+
+const getAndFindAllCount = async (where) =>{
+    try {
+        let userData = await productCategories.findAll({
+            attributes: { 
+                include: [[Sequelize.fn('COUNT', Sequelize.col('products.id')), 'productCounts']] ,
+            },
+            where,
+            include: [
+                {
+                  model: product,
+                  as: "products", 
+                },
+            ],
+            group: ['products.productCategoryId']
+        })
+        let response = {
+            status: 200,
+            message: 'Data recieved successfully',
+            data: userData,
+            error: false
+        }
+        return response;
+        
+    } catch (error) {
+        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',
@@ -98,4 +135,4 @@ const getAndFindAll = async (where, page, size) => {
     }
 }
 
-module.exports = {get, getAll, getAndFindAll}
+module.exports = {get, getAll, getAndFindAll, getAndFindAllCount}

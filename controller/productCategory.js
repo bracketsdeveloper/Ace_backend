@@ -6,7 +6,7 @@ const verifyAdmin = require('../middleware/admin');
 const create = require('../services/productCategory/create')
 const update = require('../services/productCategory/update')
 const destroy = require('../services/productCategory/delete')
-const {get, getAll, getAndFindAll} = require('../services/productCategory/get')
+const {get, getAll, getAndFindAll, getAndFindAllCount} = require('../services/productCategory/get')
 const { textValidation, IDValidation } = require('../helper/validation');
 
 
@@ -98,6 +98,19 @@ router.get('/view',
 async function (req, res) {
     const { page, size } = req.query;
     let ticket = await getAndFindAll({}, page, size)
+
+    return res.status(ticket.status).json({
+        message: ticket.message,
+        data: ticket.data
+    });
+
+})
+
+router.get('/view-inner-count',
+
+async function (req, res) {
+    const { page, size } = req.query;
+    let ticket = await getAndFindAllCount({}, page, size)
 
     return res.status(ticket.status).json({
         message: ticket.message,
