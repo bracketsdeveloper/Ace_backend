@@ -172,9 +172,14 @@ async function (req, res) {
     }
     if(price!=undefined && price!=null && price!=""){
         const priceList = req.query.price.split(';');
+        priceList.pop()
+        let newPriceList = priceList.map((item)=>{
+            return parseInt(item);
+        })
+        let list = newPriceList.sort(function(a, b){return a - b});
         where = {...where,
             [Op.and]: [
-                { price: {[Op.in]: priceList} },
+                { price: {[Op.between]: list,} },
             ],
         }
     }
