@@ -64,6 +64,7 @@ const getAndFindAllCount = async (where) =>{
                 {
                   model: product,
                   as: "products", 
+                  required:false
                 },
             ],
             group: ['products.productCategoryId']

@@ -8,6 +8,8 @@ const bulkCreated = require('../services/orderRequestProduct/bulkCreated')
 const destroy = require('../services/orderRequest/delete')
 const {get, getAll, getAndFindAll} = require('../services/orderRequest/get')
 const { textValidation, nameValidation, phoneValidation, emailValidation, IDValidation } = require('../helper/validation');
+const { userMail , adminMail} = require('../helper/mailTemplate')
+const { syncMail} = require('../helper/mail')
 
 
 // home page second section edit route.
@@ -51,6 +53,17 @@ router.post('/create',
                     });
                     
                     mainProd.length>0 && await bulkCreated(mainProd)
+                }
+
+                if(updateData.error==false){
+                    let sendData = await get({
+                        id:updateData.data.id
+                    })
+                    // console.log(sendData.data);
+                    let msg = await userMail(sendData.data)
+                    syncMail(sendData.data.email,"ACE GIFTING - Catalogue Request #"+sendData.data.id,msg)
+                    let msgAdmin = await adminMail(sendData.data)
+                    syncMail('subham.5ine@gmail.com',"ACE GIFTING - Catalogue Request #"+sendData.data.id,msgAdmin)
                 }
 
                 return res.status(updateData.status).json({

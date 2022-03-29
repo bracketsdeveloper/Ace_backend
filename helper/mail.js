@@ -20,7 +20,7 @@ module.exports={
         try{
             await transporter.sendMail({
                 from: {
-                    name: 'Impact School',
+                    name: 'ACE GIFTING',
                     address: process.env.EMAILFROM
                 },
                 to: email,
@@ -34,7 +34,7 @@ module.exports={
         return new Promise(async (resolve, reject) => {
             await transporter.sendMail({
                 from: {
-                    name: 'Impact School',
+                    name: 'ACE GIFTING',
                     address: process.env.EMAILFROM
                 },
                 to: email,

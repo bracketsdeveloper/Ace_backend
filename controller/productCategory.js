@@ -110,7 +110,7 @@ router.get('/view-inner-count',
 
 async function (req, res) {
     const { page, size } = req.query;
-    let ticket = await getAndFindAllCount({}, page, size)
+    let ticket = await getAndFindAllCount({})
 
     return res.status(ticket.status).json({
         message: ticket.message,
