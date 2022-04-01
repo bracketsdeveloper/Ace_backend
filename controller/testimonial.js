@@ -164,6 +164,18 @@ async function (req, res) {
 })
 
 // home page second section view route.
+router.get('/view-all',
+async function (req, res) {
+    let ticket = await getAll({})
+
+    return res.status(ticket.status).json({
+        message: ticket.message,
+        data: ticket.data
+    });
+
+})
+
+// home page second section view route.
 router.get('/view/:id',
 check('id').custom(async (value) => IDValidation(value, 'ticket id')),
 check('id').custom(async (value, { req }) => {
