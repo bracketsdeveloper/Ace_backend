@@ -288,90 +288,90 @@ async function (req, res) {
 
 })
 
-router.post('/create-via-excel/',
-    verifyAccessToken,
-    //custom validations
-    body('upload').custom(async (value, { req }) => {
-        if (!req.files || Object.keys(req.files).length === 0) {
-            return Promise.reject('Please select a file');
-        }
-        if (req.files.upload.mimetype == 'text/csv' || req.files.upload.mimetype == 'text/comma-separated-values' || req.files.upload.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || req.files.upload.mimetype == 'application/vnd.ms-excel') {
-            return true;
-        }
-        return Promise.reject('Invalid file type');
-    }),
+// router.post('/create-via-excel/',
+//     verifyAccessToken,
+//     //custom validations
+//     body('upload').custom(async (value, { req }) => {
+//         if (!req.files || Object.keys(req.files).length === 0) {
+//             return Promise.reject('Please select a file');
+//         }
+//         if (req.files.upload.mimetype == 'text/csv' || req.files.upload.mimetype == 'text/comma-separated-values' || req.files.upload.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || req.files.upload.mimetype == 'application/vnd.ms-excel') {
+//             return true;
+//         }
+//         return Promise.reject('Invalid file type');
+//     }),
 
-    async function (req, res) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(200).json({
-                errors: errors.mapped(),
-            });
-        } else {
+//     async function (req, res) {
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(200).json({
+//                 errors: errors.mapped(),
+//             });
+//         } else {
 
-            if (!req.files || Object.keys(req.files).length === 0) {
-                return res.status(200).json({ error: 'No files were uploaded.' });
-            }
-            // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-            try {
-                let sampleFile = req.files.upload;
-                let newFileName = `${uuid4()}-${sampleFile.name}`;
-                const dirPath = path.join(__dirname, '../public/uploads/');
-                let uploadPath = dirPath + newFileName;
+//             if (!req.files || Object.keys(req.files).length === 0) {
+//                 return res.status(200).json({ error: 'No files were uploaded.' });
+//             }
+//             // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+//             try {
+//                 let sampleFile = req.files.upload;
+//                 let newFileName = `${uuid4()}-${sampleFile.name}`;
+//                 const dirPath = path.join(__dirname, '../public/uploads/');
+//                 let uploadPath = dirPath + newFileName;
 
-                // Use the mv() method to place the file somewhere on your server
-                await sampleFile.mv(uploadPath, async function (err) {
-                    if (err) {
-                        return res.status(200).json({ err });
-                    }else{
-                        readXlsxFile(uploadPath).then((rows) => {
-                            // skip header
-                            rows.shift();
+//                 // Use the mv() method to place the file somewhere on your server
+//                 await sampleFile.mv(uploadPath, async function (err) {
+//                     if (err) {
+//                         return res.status(200).json({ err });
+//                     }else{
+//                         readXlsxFile(uploadPath).then((rows) => {
+//                             // skip header
+//                             rows.shift();
     
-                            let data = [];
+//                             let data = [];
     
-                            rows.forEach(async (row) => {
-                                let excelData = {
-                                    name: row[0],
-                                    description: row[1],
-                                    price: row[2],
-                                    productCategoryId: row[3],
-                                    image: row[4],
-                                };
-                                data.push(excelData);
-                            });
+//                             rows.forEach(async (row) => {
+//                                 let excelData = {
+//                                     name: row[0],
+//                                     description: row[1],
+//                                     price: row[2],
+//                                     productCategoryId: row[3],
+//                                     image: row[4],
+//                                 };
+//                                 data.push(excelData);
+//                             });
     
-                            data.forEach(async (lead) => {
-                                // await Leads.create({ ...lead, userId: req.payload.id })
-                                await create({ ...lead, userId: req.payload.id })
-                            })
-                            // console.log(data)
-                            return res.status(200).json({
-                                message: 'lead stored successfully',
-                            });
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            return res.status(200).json({
-                                message: 'Oops!! Something went wrong please try again.',
-                            });
-                        })
-                    }
-                });
+//                             data.forEach(async (lead) => {
+//                                 // await Leads.create({ ...lead, userId: req.payload.id })
+//                                 await create({ ...lead, userId: req.payload.id })
+//                             })
+//                             // console.log(data)
+//                             return res.status(200).json({
+//                                 message: 'lead stored successfully',
+//                             });
+//                         })
+//                         .catch((err) => {
+//                             console.log(err);
+//                             return res.status(200).json({
+//                                 message: 'Oops!! Something went wrong please try again.',
+//                             });
+//                         })
+//                     }
+//                 });
 
                     
 
 
 
-            } catch (error) {
-                console.log(error);
-                return res.status(200).json({
-                    message: 'Oops!! Something went wrong please try again.',
-                });
-            }
-        }
+//             } catch (error) {
+//                 console.log(error);
+//                 return res.status(200).json({
+//                     message: 'Oops!! Something went wrong please try again.',
+//                 });
+//             }
+//         }
 
-    })
+//     })
 
 
 
