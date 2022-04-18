@@ -13,18 +13,18 @@ const orderRequestController = require('./controller/orderRequest');
 
 
 const routes = [
-    { path: '/auth', controller: authController },
-    { path: '/home-page-second-section', controller: homePageSecondSectionController },
-    { path: '/home-page-second-section-banner', controller: homePageSecondSectionBannerController },
-    { path: '/home-page-third-section', controller: homePageThirdSectionController },
-    { path: '/home-page-third-section-content', controller: homePageThirdSectionContentController },
-    { path: '/home-page-fifth-section', controller: homePageFifthSectionController },
-    { path: '/home-page-fifth-section-content', controller: homePageFifthSectionContentController },
-    { path: '/testimonial', controller: testimonialController },
-    { path: '/enquiry', controller: enquiryController },
-    { path: '/product-category', controller: productCategoryController },
-    { path: '/product', controller: productController },
-    { path: '/order-request', controller: orderRequestController },
+    { path: '/api/auth', controller: authController },
+    { path: '/api/home-page-second-section', controller: homePageSecondSectionController },
+    { path: '/api/home-page-second-section-banner', controller: homePageSecondSectionBannerController },
+    { path: '/api/home-page-third-section', controller: homePageThirdSectionController },
+    { path: '/api/home-page-third-section-content', controller: homePageThirdSectionContentController },
+    { path: '/api/home-page-fifth-section', controller: homePageFifthSectionController },
+    { path: '/api/home-page-fifth-section-content', controller: homePageFifthSectionContentController },
+    { path: '/api/testimonial', controller: testimonialController },
+    { path: '/api/enquiry', controller: enquiryController },
+    { path: '/api/product-category', controller: productCategoryController },
+    { path: '/api/product', controller: productController },
+    { path: '/api/order-request', controller: orderRequestController },
 ];
 
 module.exports = routes;

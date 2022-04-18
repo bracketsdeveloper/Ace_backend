@@ -127,6 +127,7 @@ const getAndFindAllCustom = async (where, includeWhere, sort, sortType, page, si
                 {
                   model: productCategories,
                   as: "productCategories",
+                  required: true,
                   where:includeWhere
                 },
             ],

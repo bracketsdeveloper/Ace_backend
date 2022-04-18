@@ -47,7 +47,7 @@ router.post('/create',
                 let { name, price, description, productCategoryId } = req.body;
                 let sampleFile = req.files.image;
                 let newFileName = `${uuid4()}-${sampleFile.name}`;
-                let uploadPath = 'public/products/' + newFileName;
+                let uploadPath = 'public/api/products/' + newFileName;
 
                 sampleFile.mv(uploadPath, async function (err) {
                     if (err){}
@@ -122,7 +122,7 @@ async function (req, res) {
             })
 
             if(ticket.data!=null){
-                const dirPath = path.join(__dirname, '../public/products/');
+                const dirPath = path.join(__dirname, '../public/api/products/');
                 fs.unlink(`${dirPath}${ticket.data.image}`, async (err) => {
                     if (err) { console.log(err); }
                 });
@@ -130,7 +130,7 @@ async function (req, res) {
 
             let sampleFile = req.files.image;
             let newFileName = `${uuid4()}-${sampleFile.name}`;
-            let uploadPath = 'public/products/' + newFileName;
+            let uploadPath = 'public/api/products/' + newFileName;
 
             sampleFile.mv(uploadPath, async function (err) {
                 if (err){}
@@ -166,11 +166,21 @@ async function (req, res) {
         where = {...where,
             [Op.or]: [
                 { name: {[Op.like]: `%${search}%`} },
+                { name: {[Op.like]: `${search}%`} },
+                { name: {[Op.like]: `%${search}`} },
                 { price: {[Op.like]: `%${search}%`} },
+                { price: {[Op.like]: `${search}%`} },
+                { price: {[Op.like]: `%${search}`} },
                 { description: {[Op.like]: `%${search}%`} },
+                { description: {[Op.like]: `%${search}`} },
+                { description: {[Op.like]: `${search}%`} },
+                { '$productCategories.name$': {[Op.like]: `%${search}%`} },
+                { '$productCategories.name$': {[Op.like]: `%${search}`} },
+                { '$productCategories.name$': {[Op.like]: `${search}%`} },
             ],
         }
     }
+
     if(price!=undefined && price!=null && price!=""){
         const priceList = req.query.price.split(';');
         priceList.pop()
@@ -274,7 +284,7 @@ async function (req, res) {
     })
 
     if(ticket.data!=null){
-        const dirPath = path.join(__dirname, '../public/products/');
+        const dirPath = path.join(__dirname, '../public/api/products/');
         fs.unlink(`${dirPath}${ticket.data.image}`, async (err) => {
             if (err) { console.log(err); }
         });

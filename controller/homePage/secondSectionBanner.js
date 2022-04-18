@@ -41,7 +41,7 @@ router.post('/',
                 })
 
                 if(ticket.data!=null){
-                    const dirPath = path.join(__dirname, '../../public/uploads/');
+                    const dirPath = path.join(__dirname, '../../public/api/uploads/');
                     fs.unlink(`${dirPath}${ticket.data.image}`, async (err) => {
                         if (err) { console.log(err); }
                     });
@@ -49,7 +49,7 @@ router.post('/',
 
                 let sampleFile = req.files.image;
                 let newFileName = `${uuid4()}-${sampleFile.name}`;
-                let uploadPath = 'public/uploads/' + newFileName;
+                let uploadPath = 'public/api/uploads/' + newFileName;
 
                 sampleFile.mv(uploadPath, async function (err) {
                     if (err){}
