@@ -1,27 +1,15 @@
 const db = require('../../model/connection');
-const product = db.product;
-const productCategories = db.productCategories;
 const productSubCategories = db.productSubCategories;
-const { Sequeize, Op, QueryTypes } = require('sequelize');
+const product = db.product;
+const { Sequelize, Op, QueryTypes } = require('sequelize');
 
-const get = async (where) => {
+const get = async (where) =>{
     try {
-        let userData = await product.findOne({
+        let userData = await productSubCategories.findOne({
             where,
-            include: [
-                {
-                  model: productCategories,
-                  as: "productCategories",
-                },
-                {
-                    model: productSubCategories,
-                    as: "productSubCategories",
-                    required: false,
-                },
-            ],
         })
 
-
+        
         let response = {
             status: 200,
             message: 'data recieved successfully',
@@ -29,7 +17,7 @@ const get = async (where) => {
             error: false
         }
         return response;
-
+        
     } catch (error) {
         let response = {
             status: 400,
@@ -41,9 +29,9 @@ const get = async (where) => {
     }
 }
 
-const getAll = async (where) => {
+const getAll = async (where) =>{
     try {
-        let userData = await product.findAll({
+        let userData = await productSubCategories.findAll({
             where,
         })
         let response = {
@@ -53,8 +41,48 @@ const getAll = async (where) => {
             error: false
         }
         return response;
-
+        
     } catch (error) {
+        let response = {
+            status: 400,
+            message: 'Oops! Something went wrong. Please try again',
+            data: null,
+            error: true
+        }
+        return response;
+    }
+}
+
+const getAndFindAllCount = async (where) =>{
+    try {
+        let userData = await productSubCategories.findAll({
+            attributes: { 
+                include: [[Sequelize.fn('COUNT', Sequelize.col('products.id')), 'productCounts']] ,
+            },
+            where,
+            order: [
+                [ Sequelize.col('productSubCategories.name'), 'ASC'],
+            ],
+            include: [
+                {
+                  model: product,
+                  as: "products", 
+                  required:false
+                },
+            ],
+            group: ['products.productCategoryId'],
+            
+        })
+        let response = {
+            status: 200,
+            message: 'Data recieved successfully',
+            data: userData,
+            error: false
+        }
+        return response;
+        
+    } catch (error) {
+        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',
@@ -74,29 +102,23 @@ const getPagination = (page, size) => {
 
 
 const getPagingData = (data, page, limit) => {
-    const { count: totalItems, rows: products } = data;
+    const { count: totalItems, rows: category } = data;
     const currentPage = page ? +page : 0;
     const totalPages = Math.ceil(totalItems / limit);
 
-    return { totalItems, products, totalPages, currentPage };
+    return { totalItems, category, totalPages, currentPage };
 };
 
 const getAndFindAll = async (where, page, size) => {
     const { limit, offset } = getPagination(page, size);
     try {
-        let userData = await product.findAndCountAll({
+        let userData = await productSubCategories.findAndCountAll({
             where,
             order: [
                 ['id', 'DESC'],
             ],
             limit,
             offset,
-            include: [
-                {
-                  model: productCategories,
-                  as: "productCategories",
-                },
-            ],
         })
         let data = getPagingData(userData, page, limit);
         let response = {
@@ -108,7 +130,6 @@ const getAndFindAll = async (where, page, size) => {
         return response;
 
     } catch (error) {
-        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',
@@ -119,50 +140,4 @@ const getAndFindAll = async (where, page, size) => {
     }
 }
 
-const getAndFindAllCustom = async (where, includeWhere, sort, sortType, page, size) => {
-    const { limit, offset } = getPagination(page, size);
-    try {
-        let userData = await product.findAndCountAll({
-            where,
-            order: [
-                [sort, sortType],
-            ],
-            limit,
-            offset,
-            include: [
-                {
-                  model: productCategories,
-                  as: "productCategories",
-                  required: true,
-                  where:includeWhere
-                },
-                {
-                    model: productSubCategories,
-                    as: "productSubCategories",
-                    required: false,
-                    where:includeWhere
-                },
-            ],
-        })
-        let data = getPagingData(userData, page, limit);
-        let response = {
-            status: 200,
-            message: 'data recieved successfully',
-            data: data,
-            error: false
-        }
-        return response;
-
-    } catch (error) {
-        console.log(error);
-        let response = {
-            status: 400,
-            message: 'Oops! Something went wrong. Please try again',
-            data: null,
-            error: true
-        }
-        return response;
-    }
-}
-
-module.exports = { get, getAll, getAndFindAll, getAndFindAllCustom }
+module.exports = {get, getAll, getAndFindAll, getAndFindAllCount}

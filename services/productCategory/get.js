@@ -1,5 +1,6 @@
 const db = require('../../model/connection');
 const productCategories = db.productCategories;
+const productSubCategories = db.productSubCategories;
 const product = db.product;
 const { Sequelize, Op, QueryTypes } = require('sequelize');
 
@@ -57,17 +58,26 @@ const getAndFindAllCount = async (where) =>{
     try {
         let userData = await productCategories.findAll({
             attributes: { 
-                include: [[Sequelize.fn('COUNT', Sequelize.col('products.id')), 'productCounts']] ,
+                include: [[Sequelize.fn('COUNT', Sequelize.col('products.id')), 'productCounts'], [Sequelize.col('productSubCategories.id'), 'productSubCategoryId']] ,
             },
             where,
+            order: [
+                [ Sequelize.col('productCategories.name'), 'ASC'],
+            ],
             include: [
                 {
                   model: product,
                   as: "products", 
-                  required:false
+                  required:false,
+                },
+                {
+                    model: productSubCategories,
+                    as: "productSubCategories",
+                    required: false,
                 },
             ],
-            group: ['products.productCategoryId']
+            group: ['products.productCategoryId'],
+            
         })
         let response = {
             status: 200,

@@ -1,11 +1,17 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
-const sequelize = new Sequelize('ace_gifting', 'root', '', {
+const sequelize = new Sequelize('ace_gifting', 'ace', 'giftingsolutions@123', {
     host: 'localhost',
     dialect: 'mysql',
     logging: false, //sql query logging in console
     pool: { max: 5, min: 0, idle: 10000 }
 })
+// const sequelize = new Sequelize('ace_gifting', 'root', '', {
+//     host: 'localhost',
+//     dialect: 'mysql',
+//     logging: false, //sql query logging in console
+//     pool: { max: 5, min: 0, idle: 10000 }
+// })
 
 // const sequelize = new Sequelize('a5inepro_ace_nuxt', 'a5inepro_ace_nuxt', 'Subham88676',{
 //     host:'162.251.85.215',
@@ -75,6 +81,10 @@ db.enquiry = enquiry;
 const productCategories = require('./productCategories')(sequelize, DataTypes);
 db.productCategories = productCategories;
 
+//productCategoriesmodel
+const productSubCategories = require('./productSubCategories')(sequelize, DataTypes);
+db.productSubCategories = productSubCategories;
+
 //productmodel
 const product = require('./product')(sequelize, DataTypes);
 db.product = product;
@@ -137,6 +147,12 @@ productCategories.belongsTo(User, {
     foreignKey: "userId",
 });
 
+//user-productSubCategories
+User.hasMany(productSubCategories, { as: "productSubCategories" });
+productSubCategories.belongsTo(User, {
+    foreignKey: "userId",
+});
+
 //user-product
 User.hasMany(product, { as: "product" });
 product.belongsTo(User, {
@@ -146,6 +162,20 @@ product.belongsTo(User, {
 //productCategory-product
 productCategories.hasMany(product, { as: "products" });
 product.belongsTo(productCategories, {
+    foreignKey: "productCategoryId",
+    as: "productCategories"
+});
+
+//productSubCategory-product
+productSubCategories.hasMany(product, { as: "subProducts" });
+product.belongsTo(productSubCategories, {
+    foreignKey: "productSubCategoryId",
+    as: "productSubCategories"
+});
+
+//productCategory-product
+productCategories.hasMany(productSubCategories, { as: "productSubCategories" });
+productSubCategories.belongsTo(productCategories, {
     foreignKey: "productCategoryId",
     as: "productCategories"
 });

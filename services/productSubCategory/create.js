@@ -1,21 +1,18 @@
 const db = require('../../model/connection');
-const product = db.product;
+const productSubCategories = db.productSubCategories;
 
-const update = async(where, data) => {
+const create = async(data) => {
     try {
-        let userData = await product.update(data, {
-            where
-        })
+        let userData = await productSubCategories.create(data)
         let response = {
-            status: 200,
-            message: 'Data updated successfully',
-            data: userData,
+            status: 201,
+            message: 'Data Created successfully',
+            data: userData.dataValues,
             error: false
         }
         return response;
         
     } catch (error) {
-        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',
@@ -26,4 +23,4 @@ const update = async(where, data) => {
     }
 }
 
-module.exports = update;
+module.exports = create

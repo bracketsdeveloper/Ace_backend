@@ -8,6 +8,7 @@ const homePageFifthSectionContentController = require('./controller/homePage/fif
 const testimonialController = require('./controller/testimonial');
 const enquiryController = require('./controller/enquiry');
 const productCategoryController = require('./controller/productCategory');
+const productSubCategoryController = require('./controller/productSubCategory');
 const productController = require('./controller/product');
 const orderRequestController = require('./controller/orderRequest');
 
@@ -23,6 +24,7 @@ const routes = [
     { path: '/api/testimonial', controller: testimonialController },
     { path: '/api/enquiry', controller: enquiryController },
     { path: '/api/product-category', controller: productCategoryController },
+    { path: '/api/product-sub-category', controller: productSubCategoryController },
     { path: '/api/product', controller: productController },
     { path: '/api/order-request', controller: orderRequestController },
 ];

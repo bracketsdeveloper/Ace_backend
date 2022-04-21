@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        productSubCategoryId: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
         created_at: {
           type: "TIMESTAMP",
           defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),

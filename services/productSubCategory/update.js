@@ -1,9 +1,9 @@
 const db = require('../../model/connection');
-const product = db.product;
+const productSubCategories = db.productSubCategories;
 
 const update = async(where, data) => {
     try {
-        let userData = await product.update(data, {
+        let userData = await productSubCategories.update(data, {
             where
         })
         let response = {
@@ -15,7 +15,6 @@ const update = async(where, data) => {
         return response;
         
     } catch (error) {
-        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',

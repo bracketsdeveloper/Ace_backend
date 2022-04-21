@@ -13,6 +13,7 @@ const create = async(data) => {
         return response;
         
     } catch (error) {
+        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',

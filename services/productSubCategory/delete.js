@@ -1,21 +1,22 @@
 const db = require('../../model/connection');
-const product = db.product;
+const productSubCategories = db.productSubCategories;
 
-const update = async(where, data) => {
+const destroy = async(id) => {
     try {
-        let userData = await product.update(data, {
-            where
+        let userData = await productSubCategories.destroy({
+            where: {
+                id
+            }
         })
         let response = {
             status: 200,
-            message: 'Data updated successfully',
-            data: userData,
+            message: 'data deleted successfully',
+            data: null,
             error: false
         }
         return response;
         
     } catch (error) {
-        console.log(error);
         let response = {
             status: 400,
             message: 'Oops! Something went wrong. Please try again',
@@ -26,4 +27,4 @@ const update = async(where, data) => {
     }
 }
 
-module.exports = update;
+module.exports = destroy;
