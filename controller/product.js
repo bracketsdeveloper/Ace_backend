@@ -161,24 +161,30 @@ async function (req, res) {
     
     let where = {}
     let includeWhere = {}
+    let orWhere = []
 
     if(search!=undefined && search!=null && search!=""){
+	orWhere = [...orWhere,
+            { name: {[Op.like]: `%${search}%`} },
+            { name: {[Op.like]: `${search}%`} },
+            { name: {[Op.like]: `%${search}`} },
+            { price: {[Op.like]: `%${search}%`} },
+            { price: {[Op.like]: `${search}%`} },
+            { price: {[Op.like]: `%${search}`} },
+            { description: {[Op.like]: `%${search}%`} },
+            { description: {[Op.like]: `%${search}`} },
+            { description: {[Op.like]: `${search}%`} },
+            { '$productCategories.name$': {[Op.like]: `%${search}%`} },
+            { '$productCategories.name$': {[Op.like]: `%${search}`} },
+            { '$productCategories.name$': {[Op.like]: `${search}%`} },
+	    { '$productSubCategories.name$': {[Op.like]: `%${search}%`} },
+            { '$productSubCategories.name$': {[Op.like]: `%${search}`} },
+            { '$productSubCategories.name$': {[Op.like]: `${search}%`} },
+        ]
         where = {...where,
-            [Op.or]: [
-                { name: {[Op.like]: `%${search}%`} },
-                { name: {[Op.like]: `${search}%`} },
-                { name: {[Op.like]: `%${search}`} },
-                { price: {[Op.like]: `%${search}%`} },
-                { price: {[Op.like]: `${search}%`} },
-                { price: {[Op.like]: `%${search}`} },
-                { description: {[Op.like]: `%${search}%`} },
-                { description: {[Op.like]: `%${search}`} },
-                { description: {[Op.like]: `${search}%`} },
-                { '$productCategories.name$': {[Op.like]: `%${search}%`} },
-                { '$productCategories.name$': {[Op.like]: `%${search}`} },
-                { '$productCategories.name$': {[Op.like]: `${search}%`} },
-            ],
+            [Op.or]: orWhere,
         }
+        
     }
 
     if(price!=undefined && price!=null && price!=""){
@@ -199,18 +205,21 @@ async function (req, res) {
 
     if(category!=undefined && category!=null && category!=""){
         const categoryList = req.query.category.split(';');
+        orWhere = [...orWhere,
+            { '$product.productCategoryId$': {[Op.in]: categoryList} },
+        ]
         where = {...where,
-            // [Op.or]: [
-            //     { productCategoryId: {[Op.in]: categoryList} },
-            // ],
-            productCategoryId: {[Op.in]: categoryList}
+            [Op.or]: orWhere,
         }
     }
 
     if(subcategory!=undefined && subcategory!=null && subcategory!=""){
         const subcategoryList = req.query.subcategory.split(';');
+        orWhere = [...orWhere,
+            { '$product.productSubCategoryId$': {[Op.in]: subcategoryList} },
+        ]
         where = {...where,
-            productSubCategoryId: {[Op.in]: subcategoryList}
+            [Op.or]: orWhere,
         }
     }
 

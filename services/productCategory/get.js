@@ -58,11 +58,13 @@ const getAndFindAllCount = async (where) =>{
     try {
         let userData = await productCategories.findAll({
             attributes: { 
-                include: [[Sequelize.fn('COUNT', Sequelize.col('products.id')), 'productCounts'], [Sequelize.col('productSubCategories.id'), 'productSubCategoryId']] ,
+               // include: [[Sequelize.fn('COUNT', Sequelize.col('products.id')), 'productCounts'], [Sequelize.col('productSubCategories.id'), 'productSubCategoryId']] ,
+		include: [[Sequelize.col('productSubCategories.id'), 'productSubCategoryId']] ,
             },
             where,
             order: [
                 [ Sequelize.col('productCategories.name'), 'ASC'],
+		[ Sequelize.col('productSubCategories.name'), 'ASC'],
             ],
             include: [
                 {
@@ -76,7 +78,7 @@ const getAndFindAllCount = async (where) =>{
                     required: false,
                 },
             ],
-            group: ['products.productCategoryId'],
+           // group: ['products.productCategoryId'],
             
         })
         let response = {
