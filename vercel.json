@@ -7,8 +7,8 @@
     }
   ],
   "functions": {
-    "server.js": {
-      "externalDependencies": ["mysql2"]
+    "index.js": {
+      "includeFiles": "node_modules/mysql2/**/*"
     }
   },
   "routes": [
