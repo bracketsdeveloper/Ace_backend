@@ -1,52 +1,48 @@
-
 const path = require('path');
 const express = require('express');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const helmet = require("helmet");
 const hpp = require('hpp');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const model = require('../model/connection');
-const credentials = require('../middleware/credentials')
+const credentials = require('../middleware/credentials');
+require('dotenv').config(); // Ensure environment variables are loaded
 
 const routes = require('../routes');
 
 const app = express();
 
-
 app.use(fileUpload());
-app.use(express.json()); //Used to parse JSON bodies
-app.use(express.urlencoded({ extended: false })); //Parse URL-encoded bodies
-// app.use(helmet({
-//   crossOriginResourcePolicy: false,
-// }));
+app.use(express.json()); // Used to parse JSON bodies
+app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies
+// app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(hpp());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.static('public'));
 
+app.use(credentials);
 
-app.use(credentials)
-// cors
-const whitelist = ['http://127.0.0.1:3000', 'http://localhost:3000']
+// CORS configuration
+const whitelist = ['http://127.0.0.1:3000', 'http://localhost:3000'];
+if (process.env.FRONTEND_URL) {
+  whitelist.push(process.env.FRONTEND_URL);
+}
+
 const corsOptions = {
   origin: function (origin, callback) {
-    // console.log('origin',origin)
-    // console.log(whitelist.indexOf(origin))
-    // if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    // } else {
-    //   callback(new Error('Not allowed by CORS'))
-    // }
+    // Allow requests with no origin (like mobile apps, curl requests)
+    if (!origin || whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   }
-}
-app.use(cors(corsOptions))
-// app.use(cors())
+};
 
+app.use(cors(corsOptions));
 
-
-
-//controller-routes
-routes.map(item => app.use(item.path, item.controller))
-
+// Controller-routes
+routes.map(item => app.use(item.path, item.controller));
 
 module.exports = app;
