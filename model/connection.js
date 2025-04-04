@@ -1,25 +1,13 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
+// Create a Sequelize instance with explicit mysql2 dialect module
 const sequelize = new Sequelize('ace_gifting', 'ace', 'giftingsolutions@123', {
     host: 'localhost',
     dialect: 'mysql',
-    logging: false, //sql query logging in console
+    dialectModule: require('mysql2'), // Ensures Sequelize uses mysql2
+    logging: false, // SQL query logging in console
     pool: { max: 5, min: 0, idle: 10000 }
-})
-// const sequelize = new Sequelize('ace_gifting', 'root', '', {
-//     host: 'localhost',
-//     dialect: 'mysql',
-//     logging: false, //sql query logging in console
-//     pool: { max: 5, min: 0, idle: 10000 }
-// })
-
-// const sequelize = new Sequelize('a5inepro_ace_nuxt', 'a5inepro_ace_nuxt', 'Subham88676',{
-//     host:'162.251.85.215',
-//     dialect: 'mysql',
-//     logging: false, //sql query logging in console
-//     pool:{max:5,min:0,idle:10000}
-// })
-
+});
 
 sequelize.authenticate()
     .then(() => {
@@ -27,172 +15,123 @@ sequelize.authenticate()
     })
     .catch((err) => {
         console.log('error: ', err);
-    })
+    });
 
 const db = {};
-db.sequelize = Sequelize;
 db.sequelize = sequelize;
 
+// Sync the database
 db.sequelize.sync({ force: false })
     .then(() => {
-        console.log("synced")
+        console.log("synced");
     })
     .catch((err) => {
         console.log('error: ', err);
-    })
+    });
 
-//usermodel
+// Load models
 const User = require('./users')(sequelize, DataTypes);
 db.users = User;
 
-//homepagesecondsectionmodel
 const homePageSecondSection = require('./homePageSecondSection')(sequelize, DataTypes);
 db.homePageSecondSection = homePageSecondSection;
 
-//homepagesecondsectionmodel
 const homePageSecondSectionBanner = require('./homePageSecondSectionBanner')(sequelize, DataTypes);
 db.homePageSecondSectionBanner = homePageSecondSectionBanner;
 
-//homepagethirdsectionmodel
 const homePageThirdSection = require('./homePageThirdSection')(sequelize, DataTypes);
 db.homePageThirdSection = homePageThirdSection;
 
-//homepagethirdsectioncontentmodel
 const homePageThirdSectionContent = require('./homePageThirdSectionContent')(sequelize, DataTypes);
 db.homePageThirdSectionContent = homePageThirdSectionContent;
 
-//homepagefifthsectionmodel
 const homePageFifthSection = require('./homePageFifthSection')(sequelize, DataTypes);
 db.homePageFifthSection = homePageFifthSection;
 
-//homepagefifthsectioncontentmodel
 const homePageFifthSectionContent = require('./homePageFifthSectionContent')(sequelize, DataTypes);
 db.homePageFifthSectionContent = homePageFifthSectionContent;
 
-//testimonialmodel
 const testimonial = require('./testimonial')(sequelize, DataTypes);
 db.testimonial = testimonial;
 
-//contactmodel
 const enquiry = require('./enquiry')(sequelize, DataTypes);
 db.enquiry = enquiry;
 
-//productCategoriesmodel
 const productCategories = require('./productCategories')(sequelize, DataTypes);
 db.productCategories = productCategories;
 
-//productCategoriesmodel
 const productSubCategories = require('./productSubCategories')(sequelize, DataTypes);
 db.productSubCategories = productSubCategories;
 
-//productmodel
 const product = require('./product')(sequelize, DataTypes);
 db.product = product;
 
-//orderRequestmodel
 const orderRequest = require('./orderRequest')(sequelize, DataTypes);
 db.orderRequest = orderRequest;
 
-//orderRequestProductmodel
 const orderRequestProduct = require('./orderRequestProduct')(sequelize, DataTypes);
 db.orderRequestProduct = orderRequestProduct;
 
+// Define associations
 
-//user-homepagesecondsectionmodel
+// User -> HomePageSecondSection
 User.hasMany(homePageSecondSection, { as: "homePageSecondSection" });
-homePageSecondSection.belongsTo(User, {
-    foreignKey: "userId",
-});
+homePageSecondSection.belongsTo(User, { foreignKey: "userId" });
 
-
-//user-homepagesecondsectionbannermodel
+// User -> HomePageSecondSectionBanner
 User.hasMany(homePageSecondSectionBanner, { as: "homePageSecondSectionBanner" });
-homePageSecondSectionBanner.belongsTo(User, {
-    foreignKey: "userId",
-});
+homePageSecondSectionBanner.belongsTo(User, { foreignKey: "userId" });
 
-//user-homepagesecondsectionmodel
+// User -> HomePageThirdSection
 User.hasMany(homePageThirdSection, { as: "homePageThirdSection" });
-homePageThirdSection.belongsTo(User, {
-    foreignKey: "userId",
-});
+homePageThirdSection.belongsTo(User, { foreignKey: "userId" });
 
-//user-homepagethirdsectioncontentmodel
+// User -> HomePageThirdSectionContent
 User.hasMany(homePageThirdSectionContent, { as: "homePageThirdSectionContent" });
-homePageThirdSectionContent.belongsTo(User, {
-    foreignKey: "userId",
-});
+homePageThirdSectionContent.belongsTo(User, { foreignKey: "userId" });
 
-//user-homepagethirdsectioncontentmodel
+// User -> HomePageFifthSection
 User.hasMany(homePageFifthSection, { as: "homePageFifthSection" });
-homePageFifthSection.belongsTo(User, {
-    foreignKey: "userId",
-});
+homePageFifthSection.belongsTo(User, { foreignKey: "userId" });
 
-//user-homepagethirdsectioncontentmodel
+// User -> HomePageFifthSectionContent
 User.hasMany(homePageFifthSectionContent, { as: "homePageFifthSectionContent" });
-homePageFifthSectionContent.belongsTo(User, {
-    foreignKey: "userId",
-});
+homePageFifthSectionContent.belongsTo(User, { foreignKey: "userId" });
 
-//user-testimonial
+// User -> Testimonial
 User.hasMany(testimonial, { as: "testimonial" });
-testimonial.belongsTo(User, {
-    foreignKey: "userId",
-});
+testimonial.belongsTo(User, { foreignKey: "userId" });
 
-//user-productCategories
+// User -> ProductCategories
 User.hasMany(productCategories, { as: "productCategories" });
-productCategories.belongsTo(User, {
-    foreignKey: "userId",
-});
+productCategories.belongsTo(User, { foreignKey: "userId" });
 
-//user-productSubCategories
+// User -> ProductSubCategories
 User.hasMany(productSubCategories, { as: "productSubCategories" });
-productSubCategories.belongsTo(User, {
-    foreignKey: "userId",
-});
+productSubCategories.belongsTo(User, { foreignKey: "userId" });
 
-//user-product
+// User -> Product
 User.hasMany(product, { as: "product" });
-product.belongsTo(User, {
-    foreignKey: "userId",
-});
+product.belongsTo(User, { foreignKey: "userId" });
 
-//productCategory-product
+// ProductCategories -> Product
 productCategories.hasMany(product, { as: "products" });
-product.belongsTo(productCategories, {
-    foreignKey: "productCategoryId",
-    as: "productCategories"
-});
+product.belongsTo(productCategories, { foreignKey: "productCategoryId", as: "productCategories" });
 
-//productSubCategory-product
+// ProductSubCategories -> Product
 productSubCategories.hasMany(product, { as: "subProducts" });
-product.belongsTo(productSubCategories, {
-    foreignKey: "productSubCategoryId",
-    as: "productSubCategories"
-});
+product.belongsTo(productSubCategories, { foreignKey: "productSubCategoryId", as: "productSubCategories" });
 
-//productCategory-product
+// ProductCategories -> ProductSubCategories
 productCategories.hasMany(productSubCategories, { as: "productSubCategories" });
-productSubCategories.belongsTo(productCategories, {
-    foreignKey: "productCategoryId",
-    as: "productCategories"
-});
+productSubCategories.belongsTo(productCategories, { foreignKey: "productCategoryId", as: "productCategories" });
 
-//orderRequest-orderRequestProduct
+// OrderRequest -> OrderRequestProduct
 orderRequest.hasMany(orderRequestProduct, { as: "orderRequestProducts" });
-orderRequestProduct.belongsTo(orderRequest, {
-    foreignKey: "orderRequestId",
-});
+orderRequestProduct.belongsTo(orderRequest, { foreignKey: "orderRequestId" });
 
-//product-orderRequestProduct
+// Product -> OrderRequestProduct
 product.hasOne(orderRequestProduct, { as: "product" });
-orderRequestProduct.belongsTo(product, {
-    foreignKey: "productId",
-});
-
-
-
+orderRequestProduct.belongsTo(product, { foreignKey: "productId" });
 
 module.exports = db;
