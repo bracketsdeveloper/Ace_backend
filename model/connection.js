@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
 
 // Create a Sequelize instance with explicit mysql2 dialect module
-const sequelize = new Sequelize('ace_gifting', 'ace', 'giftingsolutions@123', {
-    host: 'localhost',
+const sequelize = new Sequelize('ace_gifting', 'root', 'Abcd@12345', {
+    host: '69.62.73.158',
     dialect: 'mysql',
     dialectModule: require('mysql2'), // Ensures Sequelize uses mysql2
     logging: false, // SQL query logging in console
